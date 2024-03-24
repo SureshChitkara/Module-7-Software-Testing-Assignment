@@ -1,0 +1,264 @@
+/****************************************SC**********************************
+ *****************
+ * Name: Suresh Chitkara *
+ * Course: Software Development I CEN-3024C-24667 *
+ * Date: 3/22/2024 *
+ * Description: The LibraryManagementSystemGUI would display a screen letting the user interact with it.
+ *****************************************SC**********************************
+ ******************/
+import javax.swing.*; /* SC This line of code is a Java import statement that imports all classes from
+ the javax.swing package into the current Java source file. */
+import java.awt.*; /* SC This line of code is a Java import statement that imports all classes from the java.awt package
+into the current Java source file.*/
+import java.awt.event.ActionEvent; /* SC This line of code is a Java import statement that imports the ActionEvent class
+from the java.awt.event package into the current Java source file. */
+import java.awt.event.ActionListener; /* SC This line of code is a Java import statement that imports the ActionListener
+interface from the java.awt.event package into the current Java source file. */
+import java.io.File; /* SC This line of code is a Java import statement that imports the File class from the java.io
+package into the current Java source file. */
+import java.io.FileNotFoundException; /* SC his line of code is a Java import statement that imports the FileNotFoundException
+ class from the java.io package into the current Java source file. */
+import java.util.Scanner; /* SC This line of code is a Java import statement that imports the Scanner class from the
+java.util package into the current Java source file. */
+
+public class LibraryManagementSystemGUI extends JFrame { /* SC Java class LibraryManagementSystemGUI extends the JFrame class.
+By extending JFrame, this class inherits all the functionalities of a Swing top-level container. */
+
+    private JTextField fileNameField; /* SC This line of code declares a private instance variable named fileNameField
+    of type JTextField within the LibraryManagementSystemGUI class. */
+    private JTextArea databaseTextArea; /* SC This line of code declares a private instance variable named
+    databaseTextArea of type JTextArea within the LibraryManagementSystemGUI class. */
+    private LibraryManagementSystem library; /* SC
+This line of code declares a private instance variable named library of type LibraryManagementSystem within the
+LibraryManagementSystemGUI class. */
+
+    public LibraryManagementSystemGUI() { /* SC This line of code defines a constructor method for the
+     LibraryManagementSystemGUI class. */
+        setTitle("Library Management System"); /* SC This line of code sets the title of the LibraryManagementSystemGUI
+         window to "Library Management System". */
+        setSize(400, 300); /* SC This line of code sets the size of the LibraryManagementSystemGUI window to
+        400 pixels in width and 300 pixels in height. */
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); /* SC This line of code sets the default close operation for the
+         LibraryManagementSystemGUI window. */
+        setLayout(new BorderLayout()); /* SC This line of code sets the layout manager for the LibraryManagementSystemGUI
+        window to a BorderLayout. */
+
+        library = new LibraryManagementSystem(); /* SC This line of code creates a new instance of the LibraryManagementSystem
+         class and assigns it to the library variable within the LibraryManagementSystemGUI class. */
+
+        JPanel topPanel = new JPanel(); /* SC This line of code creates a new instance of the JPanel class named topPanel. */
+        topPanel.setLayout(new FlowLayout()); /* SC This line of code sets the layout manager for the topPanel JPanel
+        to a FlowLayout. */
+
+        JLabel fileNameLabel = new JLabel("File Name:"); /* SC This line of code creates a new instance of the
+        JLabel class named fileNameLabel and sets its text content to "File Name:". */
+        fileNameField = new JTextField(20); /* SC This line of code creates a new instance of the JTextField
+        class named fileNameField and sets its preferred width to 20 columns. */
+        JButton addButton = new JButton("Add Book"); /* SC This line of code creates a new instance of the JButton
+        class named addButton and sets its text content to "Add Book". */
+        JButton removeBarcodeButton = new JButton("Remove by Barcode"); /* SC This line of code creates a new
+        instance of the JButton class named removeBarcodeButton and sets its text content to "Remove by Barcode". */
+        JButton removeTitleButton = new JButton("Remove by Title"); /* SC This line of code creates a new instance
+        of the JButton class named removeTitleButton and sets its text content to "Remove by Title". */
+        JButton checkOutButton = new JButton("Check Out"); /* SC This line of code creates a new instance of the
+        JButton class named checkOutButton and sets its text content to "Check Out". */
+        JButton checkInButton = new JButton("Check In"); /* SC This line of code creates a new instance of the
+        JButton class named checkInButton and sets its text content to "Check In". */
+        JButton exitButton = new JButton("Exit"); /* SC This line of code creates a new instance of the JButton
+        class named exitButton and sets its text content to "Exit". */
+
+        addButton.addActionListener(new ActionListener() { /* SC This line of code adds an action listener to the
+        addButton JButton component. */
+            @Override
+            public void actionPerformed(ActionEvent e) { /* SC This line of code overrides the actionPerformed method
+            from the ActionListener interface. */
+
+                addBook(); /* SC Add book method is called. */
+            }
+        });
+
+        removeBarcodeButton.addActionListener(new ActionListener() { /* SC Button to remove book. */
+            @Override
+            public void actionPerformed(ActionEvent e) { /* SC The actionPerformed method is invoked when an action event
+             occurs, such as clicking the associated button. */
+
+                removeBookByBarcode(); /* SC Book gets removed from library depending on the barcode user typed. */
+            }
+        });
+
+        removeTitleButton.addActionListener(new ActionListener() { /* SC Adds an action listener to the removeTitleButton JButton component. */
+            @Override
+            public void actionPerformed(ActionEvent e) { /* SC This line of code defines the actionPerformed method. */
+                removeBookByTitle(); /* Sc Book is removed depending on the title of book user entered. */
+            }
+        });
+
+        checkOutButton.addActionListener(new ActionListener() { /* SC This line of code adds an action listener to the
+        checkOutButton JButton component. */
+            @Override
+            public void actionPerformed(ActionEvent e) { /* SC The actionPerformed method is invoked when an action event
+            occurs. */
+                    checkOutBook(); /* SC Book is checked out. */
+            }
+        });
+
+        checkInButton.addActionListener(new ActionListener() { /* SC When the checkInButton is clicked by the user,
+        the actionPerformed method defined  is invoked. */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkInBook();
+            }
+        });
+
+        exitButton.addActionListener(new ActionListener() { /* SC This code snippet adds an action listener to the
+        exitButton JButton component. When the exitButton is clicked by the user,
+        the actionPerformed method is invoked. */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+/* SC This code snippet adds various Swing components to the topPanel JPanel container.
+These components include a JLabel (fileNameLabel), a JTextField (fileNameField), and JButtons (addButton, removeBarcodeButton, removeTitleButton, checkOutButton, checkInButton, exitButton).
+ */
+        topPanel.add(fileNameLabel);
+        topPanel.add(fileNameField);
+        topPanel.add(addButton);
+        topPanel.add(removeBarcodeButton);
+        topPanel.add(removeTitleButton);
+        topPanel.add(checkOutButton);
+        topPanel.add(checkInButton);
+        topPanel.add(exitButton);
+
+        add(topPanel, BorderLayout.NORTH); /* SC This line of code adds the topPanel JPanel container to the LibraryManagementSystemGUI
+         JFrame using a BorderLayout layout manager, positioning it at the northern (top) region of the frame. */
+
+        databaseTextArea = new JTextArea(); /* SC This line of code initializes a new instance of the JTextArea class
+         and assigns it to the databaseTextArea variable. */
+        JScrollPane scrollPane = new JScrollPane(databaseTextArea); /* SC This line of code creates a new JScrollPane
+        instance, which is a Swing component used to provide scrolling functionality to another component,
+        and it sets the databaseTextArea as its viewport. */
+        add(scrollPane, BorderLayout.CENTER); /* SC This line of code adds the scrollPane (a JScrollPane containing the
+        databaseTextArea) to the LibraryManagementSystemGUI JFrame using a BorderLayout layout manager, positioning it
+        at the center region of the frame. */
+    }
+
+    private void addBook() { /* SC This method, addBook(), is a private method defined within the LibraryManagementSystemGUI class. */
+        String fileName = fileNameField.getText();
+        File file = new File(fileName);
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(this, "File not found: " + fileName, "Error", JOptionPane.ERROR_MESSAGE);
+            return; /* SC Exit method if file not found. */
+        }
+
+        try { /* SC This part of the code snippet you provided is within a try block, indicating that 
+        it's handling potentially risky operations where exceptions might occur. */
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(",");
+                String title = parts[0];
+                String author = parts[1];
+                int barcode = Integer.parseInt(parts[2]);
+                Book book = new Book(title, author, barcode);
+                library.addBook(book);
+            }
+            scanner.close();
+            displayDatabase();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "Error reading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid barcode format in file: " + fileName, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void removeBookByBarcode() { /* SC This method, removeBookByBarcode(), is responsible for removing a book
+    from the library management system based on the barcode number entered by the user. */
+        String barcodeInput = JOptionPane.showInputDialog(this, "Enter Barcode Number:");
+        if (barcodeInput != null && !barcodeInput.isEmpty()) {
+            try {
+                int barcode = Integer.parseInt(barcodeInput);
+                if (library.removeBookByBarcode(barcode)) {
+                    JOptionPane.showMessageDialog(this, "Book with barcode " + barcode + " removed successfully!");
+                    displayDatabase();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Book with barcode " + barcode + " not found!");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid barcode! Please enter a valid number.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Barcode cannot be empty! Please enter a valid barcode.");
+        }
+    }
+
+    private void removeBookByTitle() { /* SC This method, removeBookByTitle(), is responsible for removing a book from
+    the library management system based on the title entered by the user. */
+        String title = JOptionPane.showInputDialog(this, "Enter Book Title:");
+        if (title != null && !title.isEmpty()) {
+            if (library.removeBookByTitle(title)) {
+                JOptionPane.showMessageDialog(this, "Book '" + title + "' removed successfully!");
+                displayDatabase();
+            } else {
+                JOptionPane.showMessageDialog(this, "Book with title '" + title + "' not found!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid title! Please enter a valid title.");
+        }
+    }
+
+
+    private void checkOutBook() { /* SC This method ensures that the user provides a valid non-empty title input before
+    attempting to check out a book, and it handles potential errors such as invalid input or a book not found in the
+    library's database gracefully by displaying appropriate error messages. */
+        String title = JOptionPane.showInputDialog(this, "Enter Book Title:");
+        if (title != null && !title.isEmpty()) {
+            if (library.checkOutBook(title)) {
+                JOptionPane.showMessageDialog(this, "Book '" + title + "' checked out successfully!");
+                displayDatabase();
+            } else {
+                JOptionPane.showMessageDialog(this, "Book '" + title + "' not found or already checked in!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid title! Please enter a valid title.");
+        }
+    }
+
+    private void checkInBook() { /* SC This method ensures that the user provides a valid non-empty title input before
+    attempting to check in a book, and it handles potential errors such as invalid input or a book not found in the
+    library's database gracefully by displaying appropriate error messages. */
+        String title = JOptionPane.showInputDialog(this, "Enter Book Title:");
+        if (title != null && !title.isEmpty()) {
+            if (library.checkInBook(title)) {
+                JOptionPane.showMessageDialog(this, "Book '" + title + "' checked in successfully!");
+                displayDatabase();
+            } else {
+                JOptionPane.showMessageDialog(this, "Book '" + title + "' not found in the library.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid title! Please enter a valid title.");
+        }
+    }
+
+    private void displayDatabase() { /* SC This displayDatabase() method is responsible for updating the databaseTextArea
+     with the current state of the library's database. */
+        databaseTextArea.setText("");
+        for (Book book : library.getBooks()) {
+            databaseTextArea.append(book.toString() + "\n");
+        }
+    }
+
+    public void createAndShowGUI() { /* SC The createAndShowGUI() method is responsible for making the GUI visible to the user. */
+        setVisible(true);
+    }
+
+    public static void main(String[] args) { /* SC Main method of the application. */
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                LibraryManagementSystemGUI gui = new LibraryManagementSystemGUI();
+                gui.createAndShowGUI();
+            }
+        });
+    }
+}
